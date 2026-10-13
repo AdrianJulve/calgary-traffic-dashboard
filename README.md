@@ -20,35 +20,42 @@ calgary-traffic-dashboard/
     └── Calgary Traffic Dashboard.SemanticModel/
 ```
 
-## One-time setup
+## Setup (once)
 
-1. Install Git and an up-to-date Power BI Desktop.
-2. Clone the repo to exactly this location, so the data paths work without changes:
+Run all `git` commands in **PowerShell**. To open it in a folder, type `powershell` in File Explorer's address bar and press Enter.
+
+1. Install [Git](https://git-scm.com) and an up-to-date Power BI Desktop. Check Git with `git --version`.
+2. Accept the GitHub invitation (email or github.com/notifications).
+3. In PowerShell (Terminal):
    ```
+   git config --global user.name "Your Name"
+   git config --global user.email "you@example.com"
+   mkdir C:\Repos
    cd C:\Repos
    git clone https://github.com/AdrianJulve/calgary-traffic-dashboard.git
    ```
-3. In Power BI Desktop: File → Options and settings → Options → Preview features → tick **Shape map visual**, then restart Power BI.
-4. Open `report\Calgary Traffic Dashboard.pbip` and click **Refresh** once to load the data. No Python is needed.
+   Sign in with your browser when prompted; GitHub doesn't accept passwords in the terminal.
+4. In Power BI: Options → Preview features → tick **Shape map visual**, then restart (if not already turned on).
+5. Open `report\Calgary Traffic Dashboard.pbip` and click **Refresh** once.
 
-If you must clone somewhere else, change the `DataFolder` parameter (Transform data → Manage Parameters) to your `data\` folder, and don't commit that change.
+Cloned somewhere other than `C:\Repos`? Update the `DataFolder` parameter to your `data\` folder, and don't commit that change.
 
-## Working on the dashboard
+## Workflow
 
-1. Close Power BI, then run `git pull`.
-2. Open the `.pbip`, make your changes, then save and close Power BI.
-3. Commit and push from the repo's top folder:
-   ```
-   git add .
-   git commit -m "Describe what you changed"
-   git push
-   ```
+From `C:\Repos\calgary-traffic-dashboard` in PowerShell:
+
+```
+git pull                          # before opening Power BI
+git add .                         # after saving and closing Power BI
+git commit -m "What you changed"
+git push
+```
+
+`git status` should then say `up to date with 'origin/main'`.
 
 Rules:
-- Always close Power BI before pulling.
-- Tell the group which visual or measure you're working on. Two people editing the same visual or measure at once causes merge conflicts.
-- Never use `git push --force`.
-- If a push is rejected, run `git pull` first, then push again.
+- Say which visual or measure you're editing; two people on the same one causes conflicts.
+- Push rejected? Run `git pull`, then push again. Never use `--force`.
 
 ## Data model
 
