@@ -1,0 +1,88 @@
+table Bivariate_Legend
+	lineageTag: 484230f6-8046-47d0-bf61-f59cb88ffdb8
+
+	measure 'Legend Color' = SELECTEDVALUE(Bivariate_Legend[Color])
+		lineageTag: e0215f7f-216c-46cf-8916-e86c6777126b
+
+	measure 'CSA Count' = ```
+			COUNTROWS(Equity)    
+			```
+		formatString: 0
+		lineageTag: 50a63740-da39-4232-ae9a-854e946c2313
+
+	measure 'Legend Text Color' = IF(SELECTEDVALUE(Bivariate_Legend[Class]) IN {"3-2", "2-3", "3-3"}, "#FFFFFF", "#1A1A1A")
+		lineageTag: 094c67f5-8a18-4b51-8e05-1a3f33744454
+
+	column Class
+		lineageTag: 759cdfc3-2773-450c-b93e-0dfcceeed37d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Class]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income
+		lineageTag: 3abca2eb-5aae-4148-b240-c027873b54e3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Income]
+		sortByColumn: Income_Num
+
+		annotation SummarizationSetBy = Automatic
+
+	column Incidents
+		lineageTag: b76391f9-4547-43b6-8c54-73c59ea9dd05
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Incidents]
+		sortByColumn: Rate_Num
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income_Num
+		formatString: 0
+		lineageTag: 6fd9624c-664b-4491-b593-62929929acfd
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Income_Num]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Rate_Num
+		formatString: 0
+		lineageTag: 98e519f1-f836-4fd7-bbae-0b79639b3660
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Rate_Num]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		lineageTag: 04ef6718-1479-4dbf-834a-6037e3744cc3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Color]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Bivariate_Legend = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "Class", STRING, "Income", STRING, "Incidents", STRING, "Income_Num", INTEGER, "Rate_Num", INTEGER, "Color", STRING,
+				    {
+				        {"1-1", "Low income", "Low incident", 1, 1, "#E8E8E8"},
+				        {"2-1", "Mid income", "Low incident", 2, 1, "#B5C0DA"},
+				        {"3-1", "High income", "Low incident", 3, 1, "#6C83B5"},
+				        {"1-2", "Low income", "Mid incident", 1, 2, "#DBB7CF"},
+				        {"2-2", "Mid income", "Mid incident", 2, 2, "#A3A3C8"},
+				        {"3-2", "High income", "Mid incident", 3, 2, "#56709E"},
+				        {"1-3", "Low income", "High incident", 1, 3, "#D47BA3"},
+				        {"2-3", "Mid income", "High incident", 2, 3, "#9E6B92"},
+				        {"3-3", "High income", "High incident", 3, 3, "#4A4A78"}
+				    }
+				)
+
+	annotation PBI_Id = c2de2340ebfa4f7a9e893abc2c39df1f
+

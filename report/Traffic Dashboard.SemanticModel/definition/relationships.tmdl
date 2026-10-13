@@ -1,0 +1,12 @@
+relationship 950c763b-7eab-b11f-c68e-c372720d9ca6
+	fromColumn: Incidents.AREA_ID
+	toColumn: Equity.AREA_ID
+
+relationship 0729601c-62a7-00a4-1e8a-c45b9770794f
+	fromColumn: Incidents.COMM_CODE
+	toColumn: Communities.COMM_CODE
+
+relationship 67b32ce3-8175-eb7e-1349-004b048789f3
+	fromColumn: Equity.Bivariate_Class
+	toColumn: Bivariate_Legend.Class
+

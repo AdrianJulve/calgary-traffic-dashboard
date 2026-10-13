@@ -1,0 +1,253 @@
+table Incidents
+	lineageTag: 96406425-5ae6-487d-88f8-7acbd99711ca
+
+	measure 'Incident Count' = COUNTROWS(Incidents)
+		formatString: 0
+		lineageTag: 3443695a-cf21-4919-ad51-42e25b5959e9
+
+	measure 'Years in Scope' = CALCULATE(DISTINCTCOUNT(Incidents[Year]), REMOVEFILTERS(Equity), REMOVEFILTERS(Communities))
+		formatString: 0
+		lineageTag: f477c123-a380-4f31-a5f8-baba38e568c9
+
+	measure 'Rate per 1k' = DIVIDE([Incident Count], SUM(Equity[Population]) * [Years in Scope]) * 1000
+		lineageTag: 2b6c1dc3-bc01-4146-8b4c-cddabcc311c5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rate Rank' = RANKX(ALL(Equity[AREA_ID]), [Rate per 1k], , DESC)
+		formatString: 0
+		lineageTag: 46d80259-c3f9-4252-b5ee-60a06c4483d6
+
+	measure 'Incidents per km2' = DIVIDE([Incident Count], SUM(Communities[Area_km2]) * [Years in Scope])
+		lineageTag: 5348b643-51c1-4088-802e-e2307704f515
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Income Gap' =
+			
+			DIVIDE(
+			    CALCULATE([Rate per 1k], Equity[Income_Tertile] = "Low"),
+			    CALCULATE([Rate per 1k], Equity[Income_Tertile] = "High")
+			)
+		lineageTag: 004e8c6e-385b-4980-8930-db95cf779c60
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Peak Hour' =
+			
+			VAR t = ADDCOLUMNS(VALUES(Incidents[Hour]), "@n", [Incident Count])
+			VAR h = MAXX(TOPN(1, t, [@n], DESC), Incidents[Hour])
+			RETURN FORMAT(TIME(h, 0, 0), "h AM/PM") & "–" & FORMAT(TIME(MOD(h + 1, 24), 0, 0), "h AM/PM")
+		lineageTag: cfb419bb-62a1-4e0e-a20e-6c7e8cc702dd
+
+	column id
+		dataType: string
+		lineageTag: c712fb44-8ecf-4426-8346-6eefd151491a
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Location
+		dataType: string
+		lineageTag: 534b4b18-8633-4fcf-bc9e-adfa6a0c8680
+		summarizeBy: none
+		sourceColumn: Location
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: ef66437b-8e5c-4bdd-b212-8cdd18336821
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Start_UTC
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e1f53fba-b7cc-4088-bef5-1b443166f8e9
+		summarizeBy: none
+		sourceColumn: Start_UTC
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modified_UTC
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 551cc795-49bd-490c-93d7-f1f521ae988b
+		summarizeBy: none
+		sourceColumn: Modified_UTC
+
+		annotation SummarizationSetBy = Automatic
+
+	column AREA_ID
+		dataType: string
+		lineageTag: 8f4f84bb-cedb-4838-9537-f5cf538d03ae
+		summarizeBy: none
+		sourceColumn: AREA_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Longitude
+		dataType: double
+		lineageTag: b3c90a9e-bc1c-4498-8f12-76926b5b72a9
+		summarizeBy: sum
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Latitude
+		dataType: double
+		lineageTag: cc0749af-65c4-4662-a67a-3f91b4598317
+		summarizeBy: sum
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Start_Local =
+			
+			VAR utc = Incidents[Start_UTC]
+			VAR y = YEAR(utc)
+			VAR mar1 = DATE(y, 3, 1)
+			VAR nov1 = DATE(y, 11, 1)
+			VAR dstStart = mar1 + MOD(8 - WEEKDAY(mar1, 1), 7) + 7 + TIME(9, 0, 0)   -- 2:00 MST = 09:00 UTC
+			VAR dstEnd   = nov1 + MOD(8 - WEEKDAY(nov1, 1), 7) + TIME(8, 0, 0)       -- 2:00 MDT = 08:00 UTC
+			VAR offsetHrs = IF(utc >= dstStart && utc < dstEnd, -6, -7)
+			RETURN utc + offsetHrs / 24
+		formatString: General Date
+		lineageTag: a61da4a3-5bc4-450a-8eb4-79ff05d2e9c1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date = DATE(YEAR(Incidents[Start_Local]), MONTH(Incidents[Start_Local]), DAY(Incidents[Start_Local]))
+		formatString: Long Date
+		lineageTag: d49c6240-7510-4b4b-a8d5-ee0f036b8c6d
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year = YEAR(Incidents[Start_Local])
+		formatString: 0
+		lineageTag: c34a7a95-cb14-4332-87e4-353746a86dd6
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month = MONTH(Incidents[Start_Local])
+		formatString: 0
+		lineageTag: 2258aa7c-c18c-44de-870a-4949be759fc4
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hour = HOUR(Incidents[Start_Local])
+		formatString: 0
+		lineageTag: 00b08329-c7c9-4d84-bf6f-20731474f645
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekday = FORMAT(Incidents[Start_Local], "dddd")
+		lineageTag: 15b84371-311a-4019-8cd7-ddce70d1b6f3
+		summarizeBy: none
+		sortByColumn: Weekday_Num
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekday_Num = WEEKDAY(Incidents[Start_Local], 2)
+		formatString: 0
+		lineageTag: 3b158b14-78c1-49b1-be90-897eaea7d0ee
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Incident_Type =
+			
+			VAR d = Incidents[Description]
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    CONTAINSSTRING(d, "pedestrian"), "Pedestrian",
+			    CONTAINSSTRING(d, "cyclist") || CONTAINSSTRING(d, "bicycl"), "Cyclist",
+			    CONTAINSSTRING(d, "single vehicle"), "Single vehicle",
+			    CONTAINSSTRING(d, "two vehicle"), "Two vehicle",
+			    CONTAINSSTRING(d, "multi-vehicle"), "Multi-vehicle",
+			    "Unspecified"
+			)
+		lineageTag: ebef5491-2558-4e82-bafb-d4d678d0f4e4
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lane_Blocked = CONTAINSSTRING(Incidents[Description], "blocking")
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: ee75de8e-40f6-459f-872a-9f5a0a934c88
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Road_Class =
+			
+			VAR loc = Incidents[Location]
+			RETURN
+			IF(
+			    CONTAINSSTRING(loc, "Deerfoot") || CONTAINSSTRING(loc, "Glenmore Trail")
+			        || CONTAINSSTRING(loc, "Stoney") || CONTAINSSTRING(loc, "Crowchild")
+			        || CONTAINSSTRING(loc, "Sarcee") || CONTAINSSTRING(loc, "Ring Road")
+			        || CONTAINSSTRING(loc, "Highway") || CONTAINSSTRING(loc, "Hwy")
+			        || CONTAINSSTRING(loc, "bound "),
+			    "Major corridor",
+			    "Local / arterial"
+			)
+		lineageTag: d0311eb1-796f-478f-a5e5-295f66795277
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quadrant = IF(ISBLANK(Incidents[AREA_ID]), BLANK(), RIGHT(Incidents[AREA_ID], 2))
+		lineageTag: 420bb35b-26f1-4544-ad7e-a456335dad3f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column COMM_CODE
+		dataType: string
+		lineageTag: 1d0fe375-a4b3-43a2-8ba4-690af6f1257e
+		summarizeBy: none
+		sourceColumn: COMM_CODE
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Incidents = m
+		mode: import
+		source =
+				let
+				    Source   = Csv.Document(File.Contents(DataFolder & "Traffic_Incidents.csv"),
+				                 [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Blanks   = Table.ReplaceValue(Promoted, "", null, Replacer.ReplaceValue, {"Modified_UTC", "AREA_ID", "COMM_CODE"}),
+				    Typed    = Table.TransformColumnTypes(Blanks, {
+				                 {"id", type text}, {"Location", type text}, {"Description", type text},
+				                 {"Start_UTC", type datetime}, {"Modified_UTC", type datetime},
+				                 {"AREA_ID", type text}, {"COMM_CODE", type text},
+				                 {"Longitude", type number}, {"Latitude", type number}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

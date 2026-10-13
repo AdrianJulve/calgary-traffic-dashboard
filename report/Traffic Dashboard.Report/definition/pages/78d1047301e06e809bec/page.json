@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "78d1047301e06e809bec",
+  "displayName": "Duplicate of Store Sales Overview",
+  "displayOption": "FitToPage",
+  "height": 1080,
+  "width": 1920,
+  "pageBinding": {
+    "name": "44a9ca1e549fbbc7a663",
+    "type": "Default",
+    "parameters": []
+  }
+}

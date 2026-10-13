@@ -1,0 +1,7 @@
+expression DataFolder = "C:\Repos\calgary-traffic-dashboard\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 6c9b1efa-c3c0-4285-9a07-1a93d3b89723
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

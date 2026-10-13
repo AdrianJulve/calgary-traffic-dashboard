@@ -1,0 +1,105 @@
+table Communities
+	lineageTag: 8db63dda-80bf-4aa5-8af5-35e551babe4b
+
+	measure 'Communities in CSA' =
+			
+			CONCATENATEX(
+			    TOPN(6, CALCULATETABLE(VALUES(Communities[NAME]), Incidents, Communities[CLASS] <> "Residual Sub Area"), [Incident Count], DESC),
+			    Communities[NAME], ", ", [Incident Count], DESC
+			)
+		lineageTag: 7715475e-0e7d-46f2-bfc4-4da1c25430f2
+
+	column CLASS
+		dataType: string
+		lineageTag: b7cb8ac3-2874-47cd-899e-c84965f62842
+		summarizeBy: none
+		sourceColumn: CLASS
+
+		annotation SummarizationSetBy = Automatic
+
+	column COMM_CODE
+		dataType: string
+		lineageTag: bd2c4e45-642d-4859-8921-bc6260ed3731
+		summarizeBy: none
+		sourceColumn: COMM_CODE
+
+		annotation SummarizationSetBy = Automatic
+
+	column NAME
+		dataType: string
+		lineageTag: 5dbdf47c-bcca-4336-b651-e8e66da8c8fa
+		summarizeBy: none
+		sourceColumn: NAME
+
+		annotation SummarizationSetBy = Automatic
+
+	column SECTOR
+		dataType: string
+		lineageTag: 5fecacb6-d8c5-4077-a1bb-d3ed88a78c33
+		summarizeBy: none
+		sourceColumn: SECTOR
+
+		annotation SummarizationSetBy = Automatic
+
+	column SRG
+		dataType: string
+		lineageTag: 8af3b424-16e6-41f9-bd63-9901a5dde39a
+		summarizeBy: none
+		sourceColumn: SRG
+
+		annotation SummarizationSetBy = Automatic
+
+	column COMM_STRUCTURE
+		dataType: string
+		lineageTag: 47071208-29c8-4c7b-a9ec-aef7ba0b3868
+		summarizeBy: none
+		sourceColumn: COMM_STRUCTURE
+
+		annotation SummarizationSetBy = Automatic
+
+	column Area_km2
+		dataType: double
+		lineageTag: bd5df7a5-9ce8-44f3-ac82-33a92db6690a
+		summarizeBy: none
+		sourceColumn: Area_km2
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Era_Order = SWITCH(Communities[COMM_STRUCTURE], "CENTRE CITY", 1, "INNER CITY", 2, "1950s", 3, "1960s/1970s", 4, "1980s/1990s", 5, "2000s", 6, "2010s", 7, "2020s", 8, "BUILDING OUT", 9, "EMPLOYMENT", 10, "PARKS", 11, "UNDEVELOPED", 12, 13)
+		formatString: 0
+		lineageTag: 07cbcc74-e07d-4e2b-9155-a3e945ccd9db
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Era = Communities[COMM_STRUCTURE]
+		lineageTag: 0fd04abd-993a-464e-9297-9019e825467c
+		summarizeBy: none
+		sortByColumn: Era_Order
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Communities = m
+		mode: import
+		source =
+				let
+				    Source   = Csv.Document(File.Contents(DataFolder & "Community_District_Boundaries.csv"),
+				                 [Delimiter = ",", Columns = 8, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    NoWKT    = Table.RemoveColumns(Promoted, {"WKT"}),
+				    Blanks   = Table.ReplaceValue(NoWKT, "", null, Replacer.ReplaceValue, {"SECTOR", "SRG", "COMM_STRUCTURE"}),
+				    Typed    = Table.TransformColumnTypes(Blanks, {
+				                 {"COMM_CODE", type text}, {"NAME", type text}, {"CLASS", type text},
+				                 {"SECTOR", type text}, {"SRG", type text}, {"COMM_STRUCTURE", type text},
+				                 {"Area_km2", type number}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

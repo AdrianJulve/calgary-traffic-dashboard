@@ -1,0 +1,356 @@
+table Equity
+	lineageTag: 2cac2af6-1e58-4c76-a7ec-2378b1077637
+
+	measure 'Map Subtitle' =
+			
+			VAR inc = SWITCH(SELECTEDVALUE(Bivariate_Legend[Income_Num]), 1, "lower", 2, "middle", 3, "higher")
+			VAR rate = SWITCH(SELECTEDVALUE(Bivariate_Legend[Rate_Num]), 1, "low", 2, "moderate", 3, "high")
+			RETURN
+			IF(
+			    HASONEVALUE(Bivariate_Legend[Class]),
+			    "Showing " & COUNTROWS(Equity) & " CSAs with " & inc & " incomes and " & rate & " incident rates · Click again to clear",
+			    "Each area coloured by median income and local-road incidents per 1,000 residents, 2017–2025 · Click a legend square to highlight a group"
+			)
+		lineageTag: 8422c904-68e5-4ffe-9bc9-fccc0ce99e08
+
+	measure 'CSA Tooltip' =
+			
+			VAR _csa     = SELECTEDVALUE(Equity[AREA_ID])
+			VAR _quad    = SELECTEDVALUE(Equity[Quadrant])
+			VAR _pop     = SELECTEDVALUE(Equity[Population])
+			VAR _inc     = SELECTEDVALUE(Equity[Median Income])
+			VAR _rate    = SELECTEDVALUE(Equity[Local_Rate])
+			VAR _incT    = SELECTEDVALUE(Equity[Income_Tertile])
+			VAR _rateT   = SWITCH(SELECTEDVALUE(Equity[Rate_Tertile_Num]), 1, "Low", 2, "Mid", 3, "High")
+			VAR _cityAvg = CALCULATE(DIVIDE(SUM(Equity[Local_Incidents]), SUM(Equity[Population]) * 9) * 1000, REMOVEFILTERS(Equity))
+			VAR _rank    = RANKX(ALL(Equity), Equity[Local_Rate], _rate, DESC)
+			VAR _nCSA    = COUNTROWS(ALL(Equity))
+			
+			VAR _commTbl = CALCULATETABLE(VALUES(Communities[NAME]), Incidents, Communities[CLASS] = "Residential")
+			VAR _nComm   = COUNTROWS(_commTbl)
+			VAR _comms   = CONCATENATEX(TOPN(8, _commTbl, [Incident Count], DESC), Communities[NAME], ", ", [Incident Count], DESC)
+			VAR _more    = IF(_nComm > 8, " +" & (_nComm - 8) & " more", "")
+			
+			VAR _typeTbl = ADDCOLUMNS(FILTER(VALUES(Incidents[Incident_Type]), Incidents[Incident_Type] <> "Unspecified"), "@n", [Incident Count])
+			VAR _topType = MAXX(TOPN(1, _typeTbl, [@n], DESC), Incidents[Incident_Type])
+			VAR _ped     = DIVIDE(CALCULATE([Incident Count], Incidents[Incident_Type] IN {"Pedestrian", "Cyclist"}), [Incident Count])
+			
+			VAR _br = UNICHAR(10)
+			RETURN
+			"CSA " & _csa & " · " & _quad & _br &
+			_incT & " income · " & _rateT & " incident rate" & _br & _br &
+			"Communities: " & COALESCE(_comms, "none listed") & _more & _br & _br &
+			"Population (2021): " & FORMAT(_pop, "#,0") & _br &
+			"Median income: " & FORMAT(_inc, "$#,0") & _br &
+			"Local incident rate: " & FORMAT(_rate, "0.0") & " per 1,000 residents a year" & _br &
+			"City average: " & FORMAT(_cityAvg, "0.0") & " · Rank " & _rank & " of " & _nCSA & _br & _br &
+			"All recorded incidents: " & FORMAT([Incident Count], "#,0") & _br &
+			"Most common type: " & COALESCE(_topType, "n/a") & _br &
+			"Pedestrian / cyclist share: " & FORMAT(_ped, "0%") & _br &
+			"Busiest hour: " & [Peak Hour]
+		lineageTag: a588ded8-3bce-4724-b2d7-6df414f5922b
+
+	column AREA_ID
+		dataType: string
+		lineageTag: 7e30566b-11ad-4cdc-b26d-a08e62990c31
+		summarizeBy: none
+		sourceColumn: AREA_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Population
+		dataType: int64
+		formatString: 0
+		lineageTag: 42f4753c-2e4b-453c-8ecc-13f3b76624ea
+		summarizeBy: sum
+		sourceColumn: Population
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Median Income'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 057e3f9e-3f52-47f8-b1e4-92032e4e6b1f
+		summarizeBy: sum
+		sourceColumn: Median Income
+
+		annotation SummarizationSetBy = Automatic
+
+	column Children
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 12e2689b-abac-42ee-a2a7-d98cbc33ae3e
+		summarizeBy: sum
+		sourceColumn: Children
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Drive to work'
+		dataType: double
+		lineageTag: a8a89684-cbce-4082-b195-73dd2be166cf
+		summarizeBy: sum
+		sourceColumn: Drive to work
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Indigenous
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f8f7ef02-4fe9-41ad-961b-6e5f52282ed5
+		summarizeBy: sum
+		sourceColumn: Indigenous
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LIM-AT 0-17 years'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 16b128dc-487e-4637-8fcb-41d5f038f6b1
+		summarizeBy: sum
+		sourceColumn: LIM-AT 0-17 years
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LIM-AT 18-64 years'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9b9efc84-200e-4d5b-a73a-b189a38ea65e
+		summarizeBy: sum
+		sourceColumn: LIM-AT 18-64 years
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LIM-AT 65+ years'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 636b8b8e-7a52-45e2-aaf4-bab368a5626b
+		summarizeBy: sum
+		sourceColumn: LIM-AT 65+ years
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Live in single detached home'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bf903e99-1482-4411-a6aa-9bf59b566c6d
+		summarizeBy: sum
+		sourceColumn: Live in single detached home
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lone Parent'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 2a41daff-32b9-427a-9b56-05c9d01818da
+		summarizeBy: sum
+		sourceColumn: Lone Parent
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Moved in the last year'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: df20ee21-375d-4381-b880-bee1a4ed2794
+		summarizeBy: sum
+		sourceColumn: Moved in the last year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Newcomers
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 51d3342f-ccd0-44e2-b2d8-b1f9ae54ebae
+		summarizeBy: sum
+		sourceColumn: Newcomers
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'No English Knowledge'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 3cce995a-e1cc-4a3e-a231-ff7e76a988be
+		summarizeBy: sum
+		sourceColumn: No English Knowledge
+
+		annotation SummarizationSetBy = Automatic
+
+	column Renter
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 2323cb79-e67d-446b-a514-029ec77dc700
+		summarizeBy: sum
+		sourceColumn: Renter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Seniors
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 1268d6ab-2c6a-4d47-85b9-a368cac01e6a
+		summarizeBy: sum
+		sourceColumn: Seniors
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Transit to work'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: df734e00-66e1-41d4-bac1-38ad40040d1e
+		summarizeBy: sum
+		sourceColumn: Transit to work
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Visible Minority'
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 5ae276b9-3ea4-4d83-af9c-27050dc297e2
+		summarizeBy: sum
+		sourceColumn: Visible Minority
+
+		annotation SummarizationSetBy = Automatic
+
+	column Youth
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 56faf699-b1f3-40e7-b172-e53ff4d30c42
+		summarizeBy: sum
+		sourceColumn: Youth
+
+		annotation SummarizationSetBy = Automatic
+
+	column Area_km2
+		dataType: double
+		lineageTag: 32609703-1ede-41f8-8224-8d34f7b62f21
+		summarizeBy: sum
+		sourceColumn: Area_km2
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column WKT
+		dataType: string
+		lineageTag: 975a94c2-425d-4cc7-b59a-25feb663d07e
+		summarizeBy: none
+		sourceColumn: WKT
+
+		annotation SummarizationSetBy = Automatic
+
+	column CSA_Number =
+			
+			VALUE(LEFT(Equity[AREA_ID], SEARCH(".", Equity[AREA_ID]) - 1))
+		lineageTag: cb4baa76-7ea4-4f5c-8660-877bd0a45561
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Quadrant =
+			
+			MID(Equity[AREA_ID], SEARCH(".", Equity[AREA_ID]) + 1, 2)
+		lineageTag: 25e2b94b-1728-4e24-b02e-99ed53ef8c45
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income_Tertile_Num =
+			
+			VAR r = RANKX(ALL(Equity), Equity[Median Income], , ASC)
+			VAR n = COUNTROWS(ALL(Equity))
+			RETURN ROUNDUP(r / n * 3, 0)
+		lineageTag: f8458580-75f3-4228-bd7e-b2b248cfd0e8
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Income_Tertile = SWITCH(Equity[Income_Tertile_Num], 1, "Low", 2, "Mid", 3, "High")
+		lineageTag: 27cf43b4-9715-41ec-8ae1-118a7c1cb19e
+		summarizeBy: none
+		sortByColumn: Income_Tertile_Num
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income_Quintile =
+			
+			VAR r = RANKX(ALL(Equity), Equity[Median Income], , ASC)
+			VAR n = COUNTROWS(ALL(Equity))
+			VAR q = ROUNDUP(r / n * 5, 0)
+			RETURN "Q" & q & SWITCH(q, 1, " lowest", 5, " highest", "")
+		lineageTag: 58075db8-3569-46d5-befe-d90d0ee05f86
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Local_Incidents = COUNTROWS(FILTER(Incidents, Incidents[AREA_ID] = Equity[AREA_ID] && Incidents[Road_Class] = "Local / arterial" && Incidents[Year] >= 2017 && Incidents[Year] <= 2025))
+		formatString: 0
+		lineageTag: 91cbda0a-4ef3-40c6-8e90-1a81c51d173b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Local_Rate = DIVIDE(Equity[Local_Incidents], Equity[Population] * 9) * 1000
+		lineageTag: b48290cf-e351-43f2-8083-d7e6b4a564ec
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Rate_Tertile_Num = ROUNDUP(RANKX(ALL(Equity), Equity[Local_Rate], , ASC) / COUNTROWS(ALL(Equity)) * 3, 0)
+		lineageTag: 4951c7c4-2efc-41c0-bb92-4199d914e0dd
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Bivariate_Class = Equity[Income_Tertile_Num] & "-" & Equity[Rate_Tertile_Num]
+		lineageTag: d59af268-25a5-44e1-8d52-28febe681586
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Equity = m
+		mode: import
+		source =
+				let
+				      Source = Csv.Document(File.Contents(DataFolder & "Calgary_Equity_Index_Overlay_Statistics.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {
+				    {"AREA_ID", type text},
+				    {"Population", Int64.Type},
+				    {"Median Income", Currency.Type},
+				    {"Children", Percentage.Type},
+				    {"Drive to work", Percentage.Type},
+				    {"Indigenous", Percentage.Type},
+				    {"LIM-AT 0-17 years", Percentage.Type},
+				    {"LIM-AT 18-64 years", Percentage.Type},
+				    {"LIM-AT 65+ years", Percentage.Type},
+				    {"Live in single detached home", Percentage.Type},
+				    {"Lone Parent", Percentage.Type},
+				    {"Moved in the last year", Percentage.Type},
+				    {"Newcomers", Percentage.Type},
+				    {"No English Knowledge", Percentage.Type},
+				    {"Renter", Percentage.Type},
+				    {"Seniors", Percentage.Type},
+				    {"Transit to work", Percentage.Type},
+				    {"Visible Minority", Percentage.Type},
+				    {"Youth", Percentage.Type},
+				    {"Area_km2", type number},
+				    {"WKT", type text}
+				}, "en-US")
+				in
+				  #"Changed column type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
