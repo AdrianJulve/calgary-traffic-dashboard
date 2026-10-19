@@ -196,8 +196,13 @@
           "properties": {
             "text": {
               "expr": {
-                "Literal": {
-                  "Value": "'Incidents per 100,000 residents a month; pink = above average'"
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Incidents"
+                    }
+                  },
+                  "Property": "Month Subtitle"
                 }
               }
             },

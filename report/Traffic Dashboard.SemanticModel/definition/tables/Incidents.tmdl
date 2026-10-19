@@ -108,6 +108,14 @@ table Incidents
 			    "all of Calgary")
 		lineageTag: 77a38119-92cf-4e64-b32a-4c80ba84180e
 
+	measure 'Month Subtitle' =
+			
+			VAR _m    = ADDCOLUMNS(SUMMARIZE(Incidents, Incidents[Month], Incidents[Month_Name]), "@r", [Monthly Rate per 100k])
+			VAR _high = MAXX(TOPN(1, _m, [@r], DESC), Incidents[Month_Name])
+			VAR _low  = MAXX(TOPN(1, FILTER(_m, NOT ISBLANK([@r])), [@r], ASC), Incidents[Month_Name])
+			RETURN [Txt Scope] & ", " & [Txt Years] & " · highest " & _high & ", lowest " & _low & " · pink = above average "
+		lineageTag: add5e821-7e92-41b9-9956-b762eeaab8b7
+
 	column id
 		dataType: string
 		lineageTag: c712fb44-8ecf-4426-8346-6eefd151491a

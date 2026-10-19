@@ -19,10 +19,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "Traffic Incidents in Calgary",
+                    "value": "Traffic Incidents Across Calgary’s Neighbourhoods",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontSize": "28pt"
+                      "fontSize": "24pt"
                     }
                   }
                 ]

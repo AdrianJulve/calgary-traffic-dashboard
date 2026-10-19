@@ -44,6 +44,15 @@ table Factors
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Factor Subtitle' =
+			
+			VAR _n = CALCULATE([Incident Count], REMOVEFILTERS(Equity), REMOVEFILTERS(Bivariate_Legend), Incidents[Road_Class] = "Local / arterial")
+			RETURN
+			IF(_n < 300,
+			    "Too few incidents to compare · widen the filters",
+			    [Txt Years] & ", " & [Txt Types] & " · pink = more common in high-rate areas")
+		lineageTag: 88ad214c-87be-4a4d-9998-73ab4870bd32
+
 	column Factor
 		lineageTag: bb7d67ee-fbb5-4eb1-b7c6-8f1cf58c6780
 		summarizeBy: none
