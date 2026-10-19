@@ -827,32 +827,6 @@ cultureInfo en-US
 			      ],
 			      "SemanticType": "Time"
 			    },
-			    "incident.month": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Incidents",
-			          "ConceptualProperty": "Month"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "month": {
-			            "State": "Generated"
-			          }
-			        },
-			        {
-			          "mth": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.736
-			          }
-			        }
-			      ]
-			    },
 			    "incident.hour": {
 			      "Definition": {
 			        "Binding": {

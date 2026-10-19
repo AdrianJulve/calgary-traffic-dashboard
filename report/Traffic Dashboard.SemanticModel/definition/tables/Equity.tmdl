@@ -3,20 +3,22 @@ table Equity
 
 	measure 'Map Subtitle' =
 			
-			VAR inc = SWITCH(SELECTEDVALUE(Bivariate_Legend[Income_Num]), 1, "lower", 2, "middle", 3, "higher")
-			VAR rate = SWITCH(SELECTEDVALUE(Bivariate_Legend[Rate_Num]), 1, "low", 2, "moderate", 3, "high")
+			VAR _inc  = SWITCH(SELECTEDVALUE(Bivariate_Legend[Income_Num]), 1, "Lower", 2, "Middle", 3, "Higher")
+			VAR _rate = SWITCH(SELECTEDVALUE(Bivariate_Legend[Rate_Num]), 1, "low", 2, "moderate", 3, "high")
+			VAR _yrs  = [Txt Years]
+			VAR _note = IF(_yrs <> "2017–2025", " · charts: " & _yrs, "")
 			RETURN
 			IF(
 			    HASONEVALUE(Bivariate_Legend[Class]),
-			    "Showing " & COUNTROWS(Equity) & " CSAs with " & inc & " incomes and " & rate & " incident rates · Click again to clear",
-			    "Each area coloured by median income and local-road incidents per 1,000 residents, 2017–2025 · Click a legend square to highlight a group"
+			    _inc & " income, " & _rate & " rate: " & COUNTROWS(Equity) & " areas · colours 2017–2025" & _note & " · click the square again to clear",
+			    "Income × local incident rate, 2017–2025" & _note & " · click an area or legend square for details"
 			)
 		lineageTag: 8422c904-68e5-4ffe-9bc9-fccc0ce99e08
 
 	measure 'CSA Tooltip' =
 			
 			VAR _n     = COUNTROWS(VALUES(Equity[AREA_ID]))
-			VAR _all   = COUNTROWS(ALL(Equity))
+			  VAR _all = COUNTROWS(ALLNOBLANKROW(Equity))
 			VAR _br    = UNICHAR(10)
 			
 			VAR _cityAvg = CALCULATE(DIVIDE(SUM(Equity[Local_Incidents]), SUM(Equity[Population]) * 9) * 1000, REMOVEFILTERS(Equity))

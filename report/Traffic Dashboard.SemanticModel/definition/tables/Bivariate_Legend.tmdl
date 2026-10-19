@@ -13,6 +13,24 @@ table Bivariate_Legend
 	measure 'Legend Text Color' = IF(SELECTEDVALUE(Bivariate_Legend[Class]) IN {"3-2", "2-3", "3-3"}, "#FFFFFF", "#1A1A1A")
 		lineageTag: 094c67f5-8a18-4b51-8e05-1a3f33744454
 
+	measure 'Map Status' =
+			
+			VAR _n     = COUNTROWS(VALUES(Equity[AREA_ID]))
+			VAR _all   = COUNTROWS(ALLNOBLANKROW(Equity))
+			VAR _incT  = SELECTEDVALUE(Equity[Income_Tertile])
+			VAR _rateT = SWITCH(SELECTEDVALUE(Equity[Rate_Tertile_Num]), 1, "low", 2, "moderate", 3, "high")
+			RETURN
+			SWITCH(TRUE(),
+			    _n = 1,
+			        "Selected: CSA " & SELECTEDVALUE(Equity[AREA_ID]) & " · " & _incT & " income, " & _rateT & " incident rate · click again to clear",
+			    _n < _all,
+			        "Highlighting " & _n & " of " & _all & " areas" &
+			        IF(NOT ISBLANK(_incT) && NOT ISBLANK(_rateT), " with " & LOWER(_incT) & " incomes and " & _rateT & " incident rates", "") &
+			        " · click again to clear",
+			    "Colour = median income × local-road incidents per 1,000 residents, fixed to 2017–2025 · click an area or legend square for details"
+			)
+		lineageTag: 83257598-8b50-4937-afda-3557b64c5545
+
 	column Class
 		lineageTag: 759cdfc3-2773-450c-b93e-0dfcceeed37d
 		summarizeBy: none

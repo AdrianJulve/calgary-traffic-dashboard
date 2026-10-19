@@ -55,6 +55,59 @@ table Incidents
 			": " & FORMAT([Incident Count], "#,0") & " incidents"
 		lineageTag: d2865018-7cdf-44b6-a565-3216a2bfe749
 
+	measure 'Days with Data' =
+			
+			CALCULATE(DISTINCTCOUNT(Incidents[Date]),
+			    ALLEXCEPT(Incidents, Incidents[Year], Incidents[Month], Incidents[Month_Name], Incidents[Date]))
+		formatString: 0
+		lineageTag: 82552097-c124-418b-9e76-dce9aa157b47
+
+	measure 'Monthly Rate per 100k' =
+			
+			VAR d = [Days with Data]
+			RETURN IF(d < 15, BLANK(), DIVIDE([Incident Count] / d * 30.44, SUM(Equity[Population])) * 100000)
+		lineageTag: 04a1c874-e196-4ec5-a203-a4b640126b04
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Month Bar Color' =
+			
+			VAR _v   = [Monthly Rate per 100k]
+			VAR _avg = AVERAGEX(ALLSELECTED(Incidents[Month_Name], Incidents[Month]), [Monthly Rate per 100k])
+			RETURN IF(_v > _avg, "#D47BA3", "#6C83B5")
+		lineageTag: 8a9ad533-1e23-4070-988e-45dcdf8fdfbd
+
+	measure 'Txt Years' =
+			
+			VAR _lo = CALCULATE(MIN(Incidents[Year]), REMOVEFILTERS(Equity), REMOVEFILTERS(Bivariate_Legend))
+			VAR _hi = CALCULATE(MAX(Incidents[Year]), REMOVEFILTERS(Equity), REMOVEFILTERS(Bivariate_Legend))
+			RETURN IF(_lo = _hi, FORMAT(_lo, "0"), _lo & "–" & _hi)
+		lineageTag: a2a363c8-1e63-4f1c-b10b-448fa8ad8e78
+
+	measure 'Txt Types' =
+			
+			IF(ISFILTERED(Incidents[Incident_Type]),
+			    LOWER(CONCATENATEX(VALUES(Incidents[Incident_Type]), Incidents[Incident_Type], ", ")) & " incidents",
+			    "all incident types")
+		lineageTag: a40ebe76-24e0-44d3-a30a-d71a554d1cd6
+
+	measure 'Txt Community' =
+			
+			IF(ISFILTERED(Communities[CLASS]),
+			    LOWER(CONCATENATEX(VALUES(Communities[CLASS]), Communities[CLASS], ", ")) & " communities",
+			    "all community types")
+		lineageTag: be137a97-c539-46fd-a36d-07408412ea1c
+
+	measure 'Txt Scope' =
+			
+			VAR _n   = COUNTROWS(VALUES(Equity[AREA_ID]))
+			  VAR _all = COUNTROWS(ALLNOBLANKROW(Equity))
+			RETURN SWITCH(TRUE(),
+			    _n = 1, "CSA " & SELECTEDVALUE(Equity[AREA_ID]),
+			    _n < _all, _n & " selected areas",
+			    "all of Calgary")
+		lineageTag: 77a38119-92cf-4e64-b32a-4c80ba84180e
+
 	column id
 		dataType: string
 		lineageTag: c712fb44-8ecf-4426-8346-6eefd151491a
@@ -155,13 +208,6 @@ table Incidents
 	column Year = YEAR(Incidents[Start_Local])
 		formatString: 0
 		lineageTag: c34a7a95-cb14-4332-87e4-353746a86dd6
-		summarizeBy: sum
-
-		annotation SummarizationSetBy = Automatic
-
-	column Month = MONTH(Incidents[Start_Local])
-		formatString: 0
-		lineageTag: 2258aa7c-c18c-44de-870a-4949be759fc4
 		summarizeBy: sum
 
 		annotation SummarizationSetBy = Automatic
@@ -275,6 +321,22 @@ table Incidents
 
 		annotation SummarizationSetBy = Automatic
 
+	column Month_Name = FORMAT(Incidents[Start_Local], "mmm")
+		lineageTag: 312d55db-347a-4fad-9703-b679e2c8fc39
+		summarizeBy: none
+		sortByColumn: Month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month = MONTH(Incidents[Start_Local])
+		formatString: 0
+		lineageTag: f03d5ac4-90eb-4537-b8de-a1ba11b95af4
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
 	partition Incidents = m
 		mode: import
 		source =
@@ -287,9 +349,12 @@ table Incidents
 				                 {"id", type text}, {"Location", type text}, {"Description", type text},
 				                 {"Start_UTC", type datetime}, {"Modified_UTC", type datetime},
 				                 {"AREA_ID", type text}, {"COMM_CODE", type text},
-				                 {"Longitude", type number}, {"Latitude", type number}}, "en-US")
+				                 {"Longitude", type number}, {"Latitude", type number}}, "en-US"),
+				    Filtered = Table.SelectRows(Typed, each
+				                 [Start_UTC] >= #datetime(2017, 1, 1, 7, 0, 0) and
+				                 [Start_UTC] <  #datetime(2026, 1, 1, 7, 0, 0))
 				in
-				    Typed
+				    Filtered
 
 	annotation PBI_NavigationStepName = Navigation
 

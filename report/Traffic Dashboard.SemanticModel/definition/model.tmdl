@@ -17,6 +17,7 @@ ref table Incidents
 ref table Equity
 ref table Communities
 ref table Bivariate_Legend
+ref table Factors
 
 ref cultureInfo en-US
 

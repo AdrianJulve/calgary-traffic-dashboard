@@ -1,0 +1,82 @@
+table Factors
+	lineageTag: 8c2cea64-5df0-4e5b-acd9-c8fb3e009edf
+
+	measure 'Factor Correlation' =
+			
+			VAR _f = SELECTEDVALUE(Factors[Key])
+			VAR _t =
+			    ADDCOLUMNS(
+			        ALL(Equity),
+			        "@x", SWITCH(_f,
+			            "Renter",   Equity[Renter],
+			            "LIM",      Equity[LIM-AT 18-64 years],
+			            "Moved",    Equity[Moved in the last year],
+			            "Transit",  Equity[Transit to work],
+			            "Income",   Equity[Median Income],
+			            "Children", Equity[Children],
+			            "Drive",    Equity[Drive to work],
+			            "Detached", Equity[Live in single detached home]),
+			        "@y", [Factor Rate]
+			    )
+			VAR _r   = ADDCOLUMNS(_t, "@rx", RANKX(_t, [@x], , ASC), "@ry", RANKX(_t, [@y], , ASC))
+			VAR _mx  = AVERAGEX(_r, [@rx])
+			VAR _my  = AVERAGEX(_r, [@ry])
+			VAR _cov = SUMX(_r, ([@rx] - _mx) * ([@ry] - _my))
+			VAR _sx  = SQRT(SUMX(_r, ([@rx] - _mx) ^ 2))
+			VAR _sy  = SQRT(SUMX(_r, ([@ry] - _my) ^ 2))
+			VAR _n   = CALCULATE([Incident Count], REMOVEFILTERS(Equity), Incidents[Road_Class] = "Local / arterial")
+			RETURN IF(_n < 300, BLANK(), DIVIDE(_cov, _sx * _sy))
+		lineageTag: 15d2fa5a-8d69-4699-9cf9-34a86976b740
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Factor Bar Color' = IF([Factor Correlation] > 0, "#D47BA3", "#6C83B5")
+		lineageTag: 982342df-1d4e-4dea-811d-20d1d170a741
+
+	measure 'Factor Rate' =
+			
+			IF(
+			    ISFILTERED(Communities[CLASS]),
+			    CALCULATE([Rate per 1k], Incidents[Road_Class] = "Local / arterial"),
+			    CALCULATE([Rate per 1k], Incidents[Road_Class] = "Local / arterial", Communities[CLASS] = "Residential")
+			)
+		lineageTag: a3c61c86-d6cf-427d-a063-c3550e95c4e4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Factor
+		lineageTag: bb7d67ee-fbb5-4eb1-b7c6-8f1cf58c6780
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Factor]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Key
+		lineageTag: d3d402d6-f8bf-4003-8bfc-9c6143ee394d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Key]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Factors = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "Factor", STRING, "Key", STRING,
+				    {
+				        {"Renters", "Renter"},
+				        {"Low-income adults (18–64)", "LIM"},
+				        {"Moved in the last year", "Moved"},
+				        {"Commute by transit", "Transit"},
+				        {"Median income", "Income"},
+				        {"Children", "Children"},
+				        {"Commute by driving", "Drive"},
+				        {"Single-detached homes", "Detached"}
+				    }
+				)
+
+	annotation PBI_Id = c5797e4af21e4e039fd2b331f87395f1
+
