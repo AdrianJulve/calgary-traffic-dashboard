@@ -72,6 +72,7 @@
     "useStylableVisualContainerHeader": true,
     "defaultFilterActionIsDataFilter": true,
     "useEnhancedTooltips": true,
+    "filterPaneHiddenInEditMode": true,
     "queryLimitOption": "None",
     "customMemoryLimit": "1048576",
     "customTimeoutLimit": "225"
