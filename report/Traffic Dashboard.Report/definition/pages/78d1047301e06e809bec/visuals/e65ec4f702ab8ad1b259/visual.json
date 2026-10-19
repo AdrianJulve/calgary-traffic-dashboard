@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "e65ec4f702ab8ad1b259",
   "position": {
     "x": 16,
@@ -53,13 +53,12 @@
                       "Entity": "Incidents"
                     }
                   },
-                  "Property": "Income Gap"
+                  "Property": "Rate vs City Avg"
                 }
               },
-              "queryRef": "Incidents.Income Gap",
-              "nativeQueryRef": "Low-Income Areas vs. High-Income Areas",
-              "displayName": "Low-Income Areas vs. High-Income Areas",
-              "format": "0.00\"x\""
+              "queryRef": "Incidents.Rate vs City Avg",
+              "nativeQueryRef": "Rate vs City Avg",
+              "format": "0.0x"
             },
             {
               "field": {

@@ -4672,16 +4672,6 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "label": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.714
-			          }
-			        },
-			        {
 			          "tag": {
 			            "Type": "Noun",
 			            "State": "Suggested",
@@ -6268,16 +6258,6 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.485
 			          }
-			        },
-			        {
-			          "Low-Income Areas vs. High-Income Areas": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -6468,9 +6448,430 @@ cultureInfo en-US
 			          }
 			        }
 			      ]
+			    },
+			    "incident.rate_vs_city_avg": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "Rate vs City Avg"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "rate vs city avg": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "rate vs city average": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "rate vs location avg": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.617
+			          }
+			        },
+			        {
+			          "rate vs metropolis avg": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.617
+			          }
+			        },
+			        {
+			          "rate vs municipality avg": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.617
+			          }
+			        },
+			        {
+			          "rate vs town avg": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.599
+			          }
+			        },
+			        {
+			          "rate vs metropolitan avg": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.599
+			          }
+			        }
+			      ]
+			    },
+			    "equity.CSA_tooltip": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Equity",
+			          "ConceptualProperty": "CSA Tooltip"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "CSA tooltip": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "tooltip": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        },
+			        {
+			          "Area Details": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "incident.hour_label": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "Hour_Label"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "hour label": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Hour_Label": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "label": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        },
+			        {
+			          "hour sticker": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.75
+			          }
+			        },
+			        {
+			          "sticker": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.736
+			          }
+			        },
+			        {
+			          "hour tag": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "hour decal": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "tag": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.714
+			          }
+			        },
+			        {
+			          "decal": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.714
+			          }
+			        },
+			        {
+			          "hour name tag": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.589
+			          }
+			        },
+			        {
+			          "name tag": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.571
+			          }
+			        }
+			      ]
+			    },
+			    "incident.hour_axis": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Incidents",
+			          "ConceptualProperty": "Hour_Axis"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "hour axis": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Hour_Axis": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "axis": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        },
+			        {
+			          "Hour": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
+			    "equity_has_incident_rate_vs_city_avg": {
+			      "Binding": {
+			        "ConceptualEntity": "Equity"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "equity": {
+			          "Target": {
+			            "Entity": "equity"
+			          }
+			        },
+			        "incident.rate_vs_city_avg": {
+			          "Target": {
+			            "Entity": "incident.rate_vs_city_avg"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "equity"
+			            },
+			            "Object": {
+			              "Role": "incident.rate_vs_city_avg"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "equities_have_rate_vs_city_avg"
+			        }
+			      ]
+			    },
+			    "equity_has_map_subtitle": {
+			      "Binding": {
+			        "ConceptualEntity": "Equity"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "equity": {
+			          "Target": {
+			            "Entity": "equity"
+			          }
+			        },
+			        "equity.map_subtitle": {
+			          "Target": {
+			            "Entity": "equity.map_subtitle"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "equity"
+			            },
+			            "Object": {
+			              "Role": "equity.map_subtitle"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "equities_have_map_subtitle"
+			        }
+			      ]
+			    },
+			    "bivariate_legend_has_equity_map_subtitle": {
+			      "Binding": {
+			        "ConceptualEntity": "Bivariate_Legend"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "bivariate_legend": {
+			          "Target": {
+			            "Entity": "bivariate_legend"
+			          }
+			        },
+			        "equity.map_subtitle": {
+			          "Target": {
+			            "Entity": "equity.map_subtitle"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "bivariate_legend"
+			            },
+			            "Object": {
+			              "Role": "equity.map_subtitle"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "bivariate_legends_have_map_subtitle"
+			        }
+			      ]
+			    },
+			    "incident_has_peak_hour": {
+			      "Binding": {
+			        "ConceptualEntity": "Incidents"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "incident": {
+			          "Target": {
+			            "Entity": "incident"
+			          }
+			        },
+			        "incident.peak_hour": {
+			          "Target": {
+			            "Entity": "incident.peak_hour"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "incident"
+			            },
+			            "Object": {
+			              "Role": "incident.peak_hour"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "incidents_have_peak_hour"
+			        }
+			      ]
+			    },
+			    "incident_has_income_gap": {
+			      "Binding": {
+			        "ConceptualEntity": "Incidents"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "incident": {
+			          "Target": {
+			            "Entity": "incident"
+			          }
+			        },
+			        "incident.income_gap": {
+			          "Target": {
+			            "Entity": "incident.income_gap"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "incident"
+			            },
+			            "Object": {
+			              "Role": "incident.income_gap"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "incidents_have_income_gap"
+			        }
+			      ]
+			    },
 			    "equity_has_incident_income_gap": {
 			      "Binding": {
 			        "ConceptualEntity": "Equity"
@@ -9195,6 +9596,51 @@ cultureInfo en-US
 			        }
 			      ]
 			    },
+			    "equity_in_CSA_tooltip": {
+			      "Binding": {
+			        "ConceptualEntity": "Equity"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "equity": {
+			          "Target": {
+			            "Entity": "equity"
+			          }
+			        },
+			        "equity.CSA_tooltip": {
+			          "Target": {
+			            "Entity": "equity.CSA_tooltip"
+			          }
+			        }
+			      },
+			      "SemanticSlots": {
+			        "Where": {
+			          "Role": "equity.CSA_tooltip"
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Preposition": {
+			            "Subject": {
+			              "Role": "equity"
+			            },
+			            "Prepositions": [
+			              {
+			                "in": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Object": {
+			              "Role": "equity.CSA_tooltip"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "equities_are_in_CSA_tooltip"
+			        }
+			      ]
+			    },
 			    "equity_in_area_id": {
 			      "Binding": {
 			        "ConceptualEntity": "Equity"
@@ -9382,7 +9828,7 @@ cultureInfo en-US
 			        }
 			      ]
 			    },
-			    "incident_has_income_gap": {
+			    "incident_has_rate_vs_city_avg": {
 			      "Binding": {
 			        "ConceptualEntity": "Incidents"
 			      },
@@ -9393,9 +9839,9 @@ cultureInfo en-US
 			            "Entity": "incident"
 			          }
 			        },
-			        "incident.income_gap": {
+			        "incident.rate_vs_city_avg": {
 			          "Target": {
-			            "Entity": "incident.income_gap"
+			            "Entity": "incident.rate_vs_city_avg"
 			          }
 			        }
 			      },
@@ -9406,82 +9852,16 @@ cultureInfo en-US
 			              "Role": "incident"
 			            },
 			            "Object": {
-			              "Role": "incident.income_gap"
+			              "Role": "incident.rate_vs_city_avg"
 			            }
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "incidents_have_income_gap"
+			          "ID": "incidents_have_rate_vs_city_avg"
 			        }
 			      ]
 			    },
-			    "incident_has_peak_hour": {
-			      "Binding": {
-			        "ConceptualEntity": "Incidents"
-			      },
-			      "State": "Generated",
-			      "Roles": {
-			        "incident": {
-			          "Target": {
-			            "Entity": "incident"
-			          }
-			        },
-			        "incident.peak_hour": {
-			          "Target": {
-			            "Entity": "incident.peak_hour"
-			          }
-			        }
-			      },
-			      "Phrasings": [
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "incident"
-			            },
-			            "Object": {
-			              "Role": "incident.peak_hour"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "incidents_have_peak_hour"
-			        }
-			      ]
-			    },
-			    "bivariate_legend_has_equity_map_subtitle": {
-			      "Binding": {
-			        "ConceptualEntity": "Bivariate_Legend"
-			      },
-			      "State": "Generated",
-			      "Roles": {
-			        "bivariate_legend": {
-			          "Target": {
-			            "Entity": "bivariate_legend"
-			          }
-			        },
-			        "equity.map_subtitle": {
-			          "Target": {
-			            "Entity": "equity.map_subtitle"
-			          }
-			        }
-			      },
-			      "Phrasings": [
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "bivariate_legend"
-			            },
-			            "Object": {
-			              "Role": "equity.map_subtitle"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "bivariate_legends_have_map_subtitle"
-			        }
-			      ]
-			    },
-			    "equity_has_map_subtitle": {
+			    "equity_has_CSA_tooltip": {
 			      "Binding": {
 			        "ConceptualEntity": "Equity"
 			      },
@@ -9492,9 +9872,9 @@ cultureInfo en-US
 			            "Entity": "equity"
 			          }
 			        },
-			        "equity.map_subtitle": {
+			        "equity.CSA_tooltip": {
 			          "Target": {
-			            "Entity": "equity.map_subtitle"
+			            "Entity": "equity.CSA_tooltip"
 			          }
 			        }
 			      },
@@ -9505,12 +9885,78 @@ cultureInfo en-US
 			              "Role": "equity"
 			            },
 			            "Object": {
-			              "Role": "equity.map_subtitle"
+			              "Role": "equity.CSA_tooltip"
 			            }
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "equities_have_map_subtitle"
+			          "ID": "equities_have_CSA_tooltip"
+			        }
+			      ]
+			    },
+			    "incident_has_hour_label": {
+			      "Binding": {
+			        "ConceptualEntity": "Incidents"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "incident": {
+			          "Target": {
+			            "Entity": "incident"
+			          }
+			        },
+			        "incident.hour_label": {
+			          "Target": {
+			            "Entity": "incident.hour_label"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "incident"
+			            },
+			            "Object": {
+			              "Role": "incident.hour_label"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "incidents_have_hour_labels"
+			        }
+			      ]
+			    },
+			    "incident_has_hour_axis": {
+			      "Binding": {
+			        "ConceptualEntity": "Incidents"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "incident": {
+			          "Target": {
+			            "Entity": "incident"
+			          }
+			        },
+			        "incident.hour_axis": {
+			          "Target": {
+			            "Entity": "incident.hour_axis"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "incident"
+			            },
+			            "Object": {
+			              "Role": "incident.hour_axis"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "incidents_have_hour_axes"
 			        }
 			      ]
 			    },

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "01d30ea6f4827ceccca3",
+  "position": {
+    "x": 776,
+    "y": 256,
+    "z": 10000,
+    "height": 440,
+    "width": 296,
+    "tabOrder": 10000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Equity"
+                    }
+                  },
+                  "Property": "CSA Tooltip"
+                }
+              },
+              "queryRef": "Equity.CSA Tooltip",
+              "nativeQueryRef": "Area Details",
+              "displayName": "Area Details"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Equity"
+                  }
+                },
+                "Property": "CSA Tooltip"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {}
+        }
+      ]
+    }
+  }
+}

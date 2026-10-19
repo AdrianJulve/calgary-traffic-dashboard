@@ -15,16 +15,13 @@ table Equity
 
 	measure 'CSA Tooltip' =
 			
-			VAR _csa     = SELECTEDVALUE(Equity[AREA_ID])
-			VAR _quad    = SELECTEDVALUE(Equity[Quadrant])
-			VAR _pop     = SELECTEDVALUE(Equity[Population])
-			VAR _inc     = SELECTEDVALUE(Equity[Median Income])
-			VAR _rate    = SELECTEDVALUE(Equity[Local_Rate])
+			VAR _n     = COUNTROWS(VALUES(Equity[AREA_ID]))
+			VAR _all   = COUNTROWS(ALL(Equity))
+			VAR _br    = UNICHAR(10)
+			
+			VAR _cityAvg = CALCULATE(DIVIDE(SUM(Equity[Local_Incidents]), SUM(Equity[Population]) * 9) * 1000, REMOVEFILTERS(Equity))
 			VAR _incT    = SELECTEDVALUE(Equity[Income_Tertile])
 			VAR _rateT   = SWITCH(SELECTEDVALUE(Equity[Rate_Tertile_Num]), 1, "Low", 2, "Mid", 3, "High")
-			VAR _cityAvg = CALCULATE(DIVIDE(SUM(Equity[Local_Incidents]), SUM(Equity[Population]) * 9) * 1000, REMOVEFILTERS(Equity))
-			VAR _rank    = RANKX(ALL(Equity), Equity[Local_Rate], _rate, DESC)
-			VAR _nCSA    = COUNTROWS(ALL(Equity))
 			
 			VAR _commTbl = CALCULATETABLE(VALUES(Communities[NAME]), Incidents, Communities[CLASS] = "Residential")
 			VAR _nComm   = COUNTROWS(_commTbl)
@@ -35,19 +32,56 @@ table Equity
 			VAR _topType = MAXX(TOPN(1, _typeTbl, [@n], DESC), Incidents[Incident_Type])
 			VAR _ped     = DIVIDE(CALCULATE([Incident Count], Incidents[Incident_Type] IN {"Pedestrian", "Cyclist"}), [Incident Count])
 			
-			VAR _br = UNICHAR(10)
+			VAR _incidentBlock =
+			    "All recorded incidents: " & FORMAT([Incident Count], "#,0") & _br &
+			    "Most common type: " & COALESCE(_topType, "n/a") & _br &
+			    "Pedestrian / cyclist share: " & FORMAT(_ped, "0%") & _br &
+			    "Busiest hour: " & [Peak Hour]
+			
+			VAR _csa  = SELECTEDVALUE(Equity[AREA_ID])
+			VAR _quad = SELECTEDVALUE(Equity[Quadrant])
+			VAR _pop  = SELECTEDVALUE(Equity[Population])
+			VAR _inc  = SELECTEDVALUE(Equity[Median Income])
+			VAR _rate = SELECTEDVALUE(Equity[Local_Rate])
+			VAR _rank = RANKX(ALL(Equity), Equity[Local_Rate], _rate, DESC)
+			
+			VAR _single =
+			    "CSA " & _csa & " · " & _quad & _br &
+			    _incT & " income · " & _rateT & " incident rate" & _br & _br &
+			    "Communities: " & COALESCE(_comms, "none listed") & _more & _br & _br &
+			    "Population (2021): " & FORMAT(_pop, "#,0") & _br &
+			    "Median income: " & FORMAT(_inc, "$#,0") & _br &
+			    "Local incident rate: " & FORMAT(_rate, "0.0") & " per 1,000 residents a year" & _br &
+			    "City average: " & FORMAT(_cityAvg, "0.0") & " · Rank " & _rank & " of " & _all & _br & _br &
+			    _incidentBlock
+			
+			VAR _gPop    = SUM(Equity[Population])
+			VAR _gShare  = DIVIDE(_gPop, CALCULATE(SUM(Equity[Population]), REMOVEFILTERS(Equity)))
+			VAR _gRate   = DIVIDE(SUM(Equity[Local_Incidents]), _gPop * 9) * 1000
+			VAR _gIncMin = MIN(Equity[Median Income])
+			VAR _gIncMax = MAX(Equity[Median Income])
+			VAR _gQuads  = CONCATENATEX(VALUES(Equity[Quadrant]), Equity[Quadrant] & " " & CALCULATE(COUNTROWS(Equity)), ", ", CALCULATE(COUNTROWS(Equity)), DESC)
+			VAR _gTop    = CONCATENATEX(TOPN(3, VALUES(Equity[AREA_ID]), CALCULATE(MAX(Equity[Local_Rate])), DESC), Equity[AREA_ID], ", ", CALCULATE(MAX(Equity[Local_Rate])), DESC)
+			VAR _gTitle  = IF(NOT ISBLANK(_incT) && NOT ISBLANK(_rateT), _incT & " income · " & _rateT & " incident rate", "Selected areas")
+			
+			VAR _group =
+			    _gTitle & _br &
+			    _n & " of " & _all & " areas · " & FORMAT(_gShare, "0%") & " of Calgary's population" & _br & _br &
+			    "Quadrants: " & _gQuads & _br &
+			    "Highest-rate areas: " & _gTop & _br &
+			    "Busiest communities: " & COALESCE(_comms, "none listed") & _more & _br & _br &
+			    "Population (2021): " & FORMAT(_gPop, "#,0") & _br &
+			    "Median income range: " & FORMAT(_gIncMin, "$#,0") & "–" & FORMAT(_gIncMax, "$#,0") & _br &
+			    "Group incident rate: " & FORMAT(_gRate, "0.0") & " per 1,000 residents a year (" & FORMAT(DIVIDE(_gRate, _cityAvg), "0.0") & "× city average)" & _br & _br &
+			    _incidentBlock
+			
 			RETURN
-			"CSA " & _csa & " · " & _quad & _br &
-			_incT & " income · " & _rateT & " incident rate" & _br & _br &
-			"Communities: " & COALESCE(_comms, "none listed") & _more & _br & _br &
-			"Population (2021): " & FORMAT(_pop, "#,0") & _br &
-			"Median income: " & FORMAT(_inc, "$#,0") & _br &
-			"Local incident rate: " & FORMAT(_rate, "0.0") & " per 1,000 residents a year" & _br &
-			"City average: " & FORMAT(_cityAvg, "0.0") & " · Rank " & _rank & " of " & _nCSA & _br & _br &
-			"All recorded incidents: " & FORMAT([Incident Count], "#,0") & _br &
-			"Most common type: " & COALESCE(_topType, "n/a") & _br &
-			"Pedestrian / cyclist share: " & FORMAT(_ped, "0%") & _br &
-			"Busiest hour: " & [Peak Hour]
+			SWITCH(
+			    TRUE(),
+			    _n = 1, _single,
+			    _n < _all, _group,
+			    "Click an area on the map, or a square in the legend, to see details."
+			)
 		lineageTag: a588ded8-3bce-4724-b2d7-6df414f5922b
 
 	column AREA_ID

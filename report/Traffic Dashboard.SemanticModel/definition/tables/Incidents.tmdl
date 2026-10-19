@@ -40,6 +40,21 @@ table Incidents
 			RETURN FORMAT(TIME(h, 0, 0), "h AM/PM") & "–" & FORMAT(TIME(MOD(h + 1, 24), 0, 0), "h AM/PM")
 		lineageTag: cfb419bb-62a1-4e0e-a20e-6c7e8cc702dd
 
+	measure 'Rate vs City Avg' =
+			
+			VAR _sel  = [Rate per 1k]
+			VAR _city = CALCULATE([Rate per 1k], REMOVEFILTERS(Equity), REMOVEFILTERS(Bivariate_Legend))
+			RETURN COALESCE(DIVIDE(_sel, _city), 0)
+		lineageTag: d6964ea8-6939-460c-8d2b-026d78c23cbd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Heatmap Tip' =
+			
+			SELECTEDVALUE(Incidents[Weekday]) & " · " & SELECTEDVALUE(Incidents[Hour_Label]) &
+			": " & FORMAT([Incident Count], "#,0") & " incidents"
+		lineageTag: d2865018-7cdf-44b6-a565-3216a2bfe749
+
 	column id
 		dataType: string
 		lineageTag: c712fb44-8ecf-4426-8346-6eefd151491a
@@ -158,7 +173,7 @@ table Incidents
 
 		annotation SummarizationSetBy = Automatic
 
-	column Weekday = FORMAT(Incidents[Start_Local], "dddd")
+	column Weekday = FORMAT(Incidents[Start_Local], "ddd")
 		lineageTag: 15b84371-311a-4019-8cd7-ddce70d1b6f3
 		summarizeBy: none
 		sortByColumn: Weekday_Num
@@ -228,6 +243,35 @@ table Incidents
 		lineageTag: 1d0fe375-a4b3-43a2-8ba4-690af6f1257e
 		summarizeBy: none
 		sourceColumn: COMM_CODE
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hour_Label =
+			
+			VAR h = Incidents[Hour]
+			RETURN IF(h = 0, 12, IF(h > 12, h - 12, h)) & IF(h < 12, "a", "p")
+		lineageTag: a00f37ba-4c5e-4cf2-aa5e-4ce68a7b012c
+		summarizeBy: none
+		sortByColumn: Hour
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hour_Axis =
+			
+			VAR h = Incidents[Hour]
+			RETURN
+			IF(
+			    MOD(h, 3) = 0,
+			    IF(h = 0, 12, IF(h > 12, h - 12, h)) & IF(h < 12, "a", "p"),
+			    REPT(UNICHAR(8203), h + 1)
+			)
+		lineageTag: e90fb0ef-9ccd-4232-9915-60b39bc0e32a
+		summarizeBy: none
+		sortByColumn: Hour
+
+		changedProperty = SortByColumn
 
 		annotation SummarizationSetBy = Automatic
 
